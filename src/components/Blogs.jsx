@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import staticBlogs from "../data/blogs.json";
-import { FaPlus, FaTrash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { FaPlus, FaTrash, FaThumbsUp, FaShareAlt } from "react-icons/fa";
+import { Link } from "react-router-dom"; // You can use Link from react-router-dom for routing
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -38,6 +38,7 @@ const Blogs = () => {
       image: imageData,
       author: "You",
       date: new Date().toISOString().split("T")[0],
+      likes: 0,
     };
 
     const savedBlogs = JSON.parse(localStorage.getItem("dynamicBlogs")) || [];
@@ -62,10 +63,32 @@ const Blogs = () => {
     localStorage.setItem("dynamicBlogs", JSON.stringify(newSavedBlogs));
   };
 
+  const handleLike = (id) => {
+    const updatedBlogs = blogs.map((blog) =>
+      blog.id === id ? { ...blog, likes: blog.likes + 1 } : blog
+    );
+    setBlogs(updatedBlogs);
+
+    const savedBlogs = JSON.parse(localStorage.getItem("dynamicBlogs")) || [];
+    const updatedSavedBlogs = savedBlogs.map((blog) =>
+      blog.id === id ? { ...blog, likes: blog.likes + 1 } : blog
+    );
+    localStorage.setItem("dynamicBlogs", JSON.stringify(updatedSavedBlogs));
+  };
+
   return (
     <section id="blogs" className="min-h-screen bg-gray-200 py-10 relative">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-6 text-center">Explore Our Blogs</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center ">Explore Our Blogs</h2>
+
+        <div className="text-center mb-6">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-full shadow-lg cursor-pointer"
+          >
+            Add Blog
+          </button>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-5 m-8">
           {blogs.map((blog) => (
@@ -79,32 +102,43 @@ const Blogs = () => {
                 />
               )}
               <p className="text-gray-700 mb-4">{blog.content.substring(0, 100)}...</p>
-              <p className="text-gray-500 text-sm">
-                By {blog.author} on {blog.date}
-              </p>
+              <p className="text-gray-500 text-sm">By {blog.author} on {blog.date}</p>
+
               <div className="flex justify-between items-center mt-4">
-                <Link to={`/blogs/${blog.id}`} className="text-blue-500" target="_blank" rel="noopener noreferrer">
+                {/* "Read More" link to open in a new tab */}
+                <Link
+                  to={`/blogs/${blog.id}`} // Use React Router's Link component to navigate
+                  className="text-blue-500"
+                >
                   Read More
                 </Link>
 
-                <button
-                  onClick={() => handleDeleteBlog(blog.id)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  <FaTrash size={16} />
-                </button>
+                <div className="flex items-center space-x-4">
+                  <button
+                    onClick={() => handleLike(blog.id)}
+                    className="text-blue-500 hover:text-blue-700 flex items-center space-x-1 hover: cursor-pointer"
+                  >
+                    <FaThumbsUp size={16} />
+                    <span>{blog.likes}</span>
+                  </button>
+
+                  <button className="text-green-500 hover:text-green-700 flex items-center space-x-1 hover: cursor-pointer">
+                    <FaShareAlt size={16} />
+                    <span>Share</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleDeleteBlog(blog.id)}
+                    className="text-red-500 hover:text-red-700 cursor-pointer"
+                  >
+                    <FaTrash size={16} />
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
       </div>
-
-      <button
-        onClick={() => setShowAddModal(true)}
-        className="fixed bottom-8 right-8 bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-full shadow-lg"
-      >
-        <FaPlus size={20} />
-      </button>
 
       {showAddModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
@@ -149,13 +183,13 @@ const Blogs = () => {
                     setImageData(null);
                     setImagePreview(null);
                   }}
-                  className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded"
+                  className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded hover: cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded hover: cursor-pointer"
                 >
                   Add Blog
                 </button>
