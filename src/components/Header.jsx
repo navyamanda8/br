@@ -1,21 +1,24 @@
+import { Link } from "react-router-dom";
+
 const Header = () => {
   return (
-    <div className="relative h-[50vh]">
+    <div className="relative h-40">
       <div className="absolute inset-0 bg-cover bg-gray-800 text-white py-12 flex items-center justify-center z-10">
         <h1 className="text-4xl font-bold mb-6">Welcome to Blogs Page.</h1>
       </div>
       <div className="absolute top-4 right-8 flex space-x-8 z-20">
-        <a href="home" className="text-xl font-bold text-white hover:text-gray-300 cursor-pointer">
+        <Link to="/" className="text-xl font-bold text-white hover:text-gray-300 cursor-pointer">
           Home
-        </a>
-        <a href="blogs" className="text-xl font-bold text-white hover:text-gray-300 cursor-pointer">
+        </Link>
+        <Link to="/blogs" className="text-xl font-bold text-white hover:text-gray-300 cursor-pointer">
           Blogs
-        </a>
-        <a href="contact" className="text-xl font-bold text-white hover:text-gray-300 cursor-pointer">
+        </Link>
+        <Link to="/contact" className="text-xl font-bold text-white hover:text-gray-300 cursor-pointer">
           Contact
-        </a>
+        </Link>
       </div>
     </div>
   );
 };
+
 export default Header;
